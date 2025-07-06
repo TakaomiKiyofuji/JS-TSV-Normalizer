@@ -18,16 +18,19 @@ function expandRow(cells) {
   return results;
 }
 
-// 入力TSV（2列）からMapに変換する（Denormalize用）
-// 空の値（空文字）も含めて扱う仕様
+// 入力TSV（2列）からMapに変換し、出現順も保持する（Denormalize用）
 function denormalizeMap(lines) {
   const map = new Map();
+  const order = [];
 
   for (let line of lines) {
-    const [key, value = ''] = line.split('\t'); // 値が空でも '' として追加
-    if (!map.has(key)) map.set(key, []);
-    map.get(key).push(value);
+    const [key, value = ''] = line.split('\t');
+    if (!map.has(key)) {
+      map.set(key, []);
+      order.push(key); // 初出順に記録
+    }
+    map.get(key).push(value); // 空文字でも追加
   }
 
-  return map;
+  return { map, order };
 }

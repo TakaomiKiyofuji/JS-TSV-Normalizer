@@ -26,7 +26,7 @@ function handleNormalize() {
   reader.readAsText(file);
 }
 
-// 逆正規化：2列TSVを読み込み、値をまとめて出力
+// 逆正規化：2列TSVを読み込み、出現順に値をまとめて出力
 function handleDenormalize() {
   currentMode = 'denormalize';
   const file = document.getElementById('tsvFile').files[0];
@@ -35,10 +35,11 @@ function handleDenormalize() {
   const reader = new FileReader();
   reader.onload = function (e) {
     const lines = e.target.result.trim().split('\n');
-    const map = denormalizeMap(lines); // logic.jsから利用
+    const { map, order } = denormalizeMap(lines); // 出現順付きMapを取得
 
     const output = [];
-    for (let [key, values] of map.entries()) {
+    for (let key of order) {
+      const values = map.get(key);
       output.push(`${key}\t${values.join(':')}`); // 空文字含めてjoin
     }
 
