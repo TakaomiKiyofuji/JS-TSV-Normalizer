@@ -1,3 +1,4 @@
+
 // 各セルをコロンで分割し、全組み合わせ（直積）を生成（Normalize用）
 function expandRow(cells) {
   const valuesList = cells.map(cell => cell.split(':'));
@@ -18,13 +19,14 @@ function expandRow(cells) {
 }
 
 // 入力TSV（2列）からMapに変換する（Denormalize用）
+// 空の値（空文字）も含めて扱う仕様
 function denormalizeMap(lines) {
   const map = new Map();
 
   for (let line of lines) {
-    const [key, value] = line.split('\t');
+    const [key, value = ''] = line.split('\t'); // 値が空でも '' として追加
     if (!map.has(key)) map.set(key, []);
-    if (value) map.get(key).push(value);
+    map.get(key).push(value);
   }
 
   return map;

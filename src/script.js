@@ -1,5 +1,6 @@
+
 let resultText = '';
-let currentMode = '';
+let currentMode = '';  // normalize または denormalize
 
 // 第一正規化：ファイルを読み込み、展開して出力
 function handleNormalize() {
@@ -38,7 +39,7 @@ function handleDenormalize() {
 
     const output = [];
     for (let [key, values] of map.entries()) {
-      output.push(`${key}\t${values.length > 0 ? values.join(':') : ''}`);
+      output.push(`${key}\t${values.join(':')}`); // 空文字含めてjoin
     }
 
     resultText = output.join('\n');
