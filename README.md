@@ -64,7 +64,7 @@
 ## 構成ファイル
 
 ```
-📁tsv_tool/
+📁JS-TSV-Normalizer/
 ├── index.html        # UI構成
 ├── style.css         # スタイリング
 ├── script.js         # Normalize/Denormalizeロジック
