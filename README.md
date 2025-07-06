@@ -61,15 +61,20 @@
 
 ---
 
-## 構成ファイル
+
+## 📁 ディレクトリ構成
 
 ```
-📁JS-TSV-Normalizer/
-├── index.html        # UI構成
-├── style.css         # スタイリング
-├── script.js         # Normalize/Denormalizeロジック
-└── README.md         # 本ファイル
+JS-TSV-Normalizer/
+├── index.html             # アプリのエントリーポイント（GitHub Pages用）
+├── src/                   # JavaScriptファイル群
+│   ├── script.js          # イベント処理・DOM制御
+│   └── logic.js           # Normalize / Denormalize のロジック処理
+├── css/
+│   └── style.css          # スタイリング（ボタンや背景など）
+├── README.md              # プロジェクト説明ファイル（このファイル）
 ```
+
 
 
 

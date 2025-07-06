@@ -1,10 +1,9 @@
-
 let resultText = '';
-let currentMode = '';  // normalize または denormalize
+let currentMode = '';
 
-// 第一正規化：ファイルを読み込み、コロン区切りの値を展開して全組み合わせを出力
+// 第一正規化：ファイルを読み込み、展開して出力
 function handleNormalize() {
-  currentMode = 'normalize';  // モード設定
+  currentMode = 'normalize';
   const file = document.getElementById('tsvFile').files[0];
   if (!file) return alert('TSVファイルを選んでください');
 
@@ -14,9 +13,9 @@ function handleNormalize() {
     const output = [];
 
     for (let line of lines) {
-      const cells = line.split('\t'); // タブ区切りでセル分割
-      const expanded = expandRow(cells); // コロン区切りを展開
-      output.push(...expanded); // 全組み合わせを出力
+      const cells = line.split('\t');
+      const expanded = expandRow(cells); // logic.jsから利用
+      output.push(...expanded);
     }
 
     resultText = output.join('\n');
@@ -26,50 +25,20 @@ function handleNormalize() {
   reader.readAsText(file);
 }
 
-// 各セルをコロンで分割し、全組み合わせ（直積）を生成
-function expandRow(cells) {
-  const valuesList = cells.map(cell => cell.split(':'));
-  const results = [];
-
-  // 深さ優先探索で全組み合わせを生成
-  function dfs(index, current) {
-    if (index === valuesList.length) {
-      results.push(current.join('\t'));
-      return;
-    }
-    for (let val of valuesList[index]) {
-      dfs(index + 1, current.concat(val));
-    }
-  }
-
-  dfs(0, []);
-  return results;
-}
-
-// 逆正規化：2列のキー・値データから、値をコロンでまとめて元の形式に復元
+// 逆正規化：2列TSVを読み込み、値をまとめて出力
 function handleDenormalize() {
-  currentMode = 'denormalize';  // モード設定
+  currentMode = 'denormalize';
   const file = document.getElementById('tsvFile').files[0];
   if (!file) return alert('TSVファイルを選んでください');
 
   const reader = new FileReader();
   reader.onload = function (e) {
     const lines = e.target.result.trim().split('\n');
-    const map = new Map();
-
-    for (let line of lines) {
-      const [key, value] = line.split('\t');
-      if (!map.has(key)) map.set(key, []);
-      if (value) map.get(key).push(value);
-    }
+    const map = denormalizeMap(lines); // logic.jsから利用
 
     const output = [];
     for (let [key, values] of map.entries()) {
-      if (values.length > 0) {
-        output.push(`${key}\t${values.join(':')}`);
-      } else {
-        output.push(`${key}\t`); // 値が空でも2列出力
-      }
+      output.push(`${key}\t${values.length > 0 ? values.join(':') : ''}`);
     }
 
     resultText = output.join('\n');
@@ -79,7 +48,7 @@ function handleDenormalize() {
   reader.readAsText(file);
 }
 
-// ダウンロード処理：モードに応じてファイル名を変更して保存
+// ダウンロード処理：モードに応じてファイル名変更
 function downloadResult() {
   const blob = new Blob([resultText], { type: 'text/tab-separated-values' });
 
